@@ -1,0 +1,32 @@
+# This is a basic workflow to help you get started with Actions
+name: dbt CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy-dbt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install DBT and adapter
+        run: |
+          pip install dbt-core dbt-snowflake  # replace with your adapter if different
+
+      - name: Install dependencies
+        run: dbt deps
+
+      - name: Deploy DBT project
+        run: dbt build --profiles-dir .  # this will build your seeds + Silver layer

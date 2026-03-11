@@ -2,9 +2,9 @@ name: dbt CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -18,11 +18,11 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: "3.11"
 
       - name: Install DBT and adapter
         run: |
-          pip install dbt-core dbt-snowflake  # replace dbt-snowflake if using a different adapter
+          pip install dbt-core dbt-snowflake
 
       - name: Install dependencies
         run: dbt deps

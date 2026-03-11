@@ -1,3 +1,38 @@
+name: dbt CI/CD
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  deploy-dbt:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # 3️⃣ Install dbt and Snowflake adapter
+      - name: Install DBT and adapter
+        run: |
+          pip install --upgrade pip
+          pip install dbt-core dbt-snowflake
+
+      # 4️⃣ Install dbt dependencies (packages)
+      - name: Install dbt dependencies
+        run: dbt deps
+
+      # 5️⃣ Create the dbt profiles.yml file from GitHub Secrets
       - name: Create dbt profiles.yml
         run: |
           mkdir -p ~/.dbt
@@ -16,3 +51,11 @@ default:
       schema: RAW
       threads: 6
 EOF
+
+      # 6️⃣ Optional: Check the dbt connection
+      - name: dbt debug
+        run: dbt debug
+
+      # 7️⃣ Deploy your dbt models
+      - name: Deploy dbt project
+        run: dbt build --profiles-dir ~/.dbt

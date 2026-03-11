@@ -1,4 +1,3 @@
-# This is a basic workflow to help you get started with Actions
 name: dbt CI/CD
 
 on:
@@ -23,10 +22,29 @@ jobs:
 
       - name: Install DBT and adapter
         run: |
-          pip install dbt-core dbt-snowflake  # replace with your adapter if different
+          pip install dbt-core dbt-snowflake  # replace dbt-snowflake if using a different adapter
 
       - name: Install dependencies
         run: dbt deps
 
+      - name: Create dbt profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat <<EOF > ~/.dbt/profiles.yml
+default:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      user: ${{ secrets.SNOWFLAKE_USER }}
+      password: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      role: SYSADMIN
+      database: ${{ secrets.SNOWFLAKE_DATABASE }}
+      warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+      schema: SILVER
+      threads: 6
+EOF
+
       - name: Deploy DBT project
-        run: dbt build --profiles-dir .  # this will build your seeds + Silver layer
+        run: dbt build

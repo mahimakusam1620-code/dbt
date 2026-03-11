@@ -1,32 +1,19 @@
 # This is a basic workflow to help you get started with Actions
 name: dbt CI/CD
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:
-
-jobs:
-  deploy-dbt:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      - name: Install DBT and adapter
+      - name: Create dbt profiles.yml
         run: |
-          pip install dbt-core dbt-snowflake  # replace with your adapter if different
-
-      - name: Install dependencies
-        run: dbt deps
-
-      - name: Deploy DBT project
-        run: dbt build --profiles-dir .  # this will build your seeds + Silver layer
+          mkdir -p ~/.dbt
+          echo "default:
+            target: dev
+            outputs:
+              dev:
+                type: snowflake
+                account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+                user: ${{ secrets.SNOWFLAKE_USER }}
+                password: ${{ secrets.SNOWFLAKE_PASSWORD }}
+                role: SYSADMIN
+                database: ${{ secrets.SNOWFLAKE_DATABASE }}
+                warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+                schema: SILVER
+                threads: 6" > ~/.dbt/profiles.yml

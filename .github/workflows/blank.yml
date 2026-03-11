@@ -1,4 +1,33 @@
-- name: Create dbt profiles.yml
+name: dbt CI/CD
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  deploy-dbt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install DBT and adapter
+        run: |
+          pip install --upgrade pip
+          pip install dbt-core dbt-snowflake
+
+      - name: Install dbt dependencies
+        run: dbt deps
+
+      - name: Create dbt profiles.yml
         env:
           SF_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
           SF_USER: ${{ secrets.SNOWFLAKE_USER }}
@@ -22,3 +51,9 @@ default:
       schema: RAW
       threads: 6
 EOF
+
+      - name: dbt debug
+        run: dbt debug --profiles-dir ~/.dbt
+
+      - name: Deploy dbt project
+        run: dbt build --profiles-dir ~/.dbt

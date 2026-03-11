@@ -1,4 +1,4 @@
 select 
-emp_id as employees,
+emp_id as empooyees,
 endir as numbers
 from ent

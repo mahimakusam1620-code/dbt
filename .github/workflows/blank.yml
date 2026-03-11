@@ -50,10 +50,6 @@ default:
       warehouse: "$SF_WAREHOUSE"
       schema: RAW
       threads: 6
-EOF
-
-      - name: dbt debug
-        run: dbt debug --profiles-dir ~/.dbt
 
       - name: Deploy dbt project
         run: dbt build --profiles-dir ~/.dbt

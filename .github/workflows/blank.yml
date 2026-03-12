@@ -21,9 +21,10 @@ jobs:
 
       - name: Install DBT and adapter
         run: |
+          pip install --upgrade pip
           pip install dbt-core dbt-snowflake
 
-      - name: Install dependencies
+      - name: Install dbt dependencies
         run: dbt deps
 
       - name: Create dbt profiles.yml
@@ -36,20 +37,19 @@ jobs:
         run: |
           mkdir -p ~/.dbt
           cat <<EOF > ~/.dbt/profiles.yml
-          default:
-            target: dev
-            outputs:
-              dev:
-                type: snowflake
-                account: "$SF_ACCOUNT"
-                user: "$SF_USER"
-                password: "$SF_PASSWORD"
-                role: SYSADMIN
-                database: "$SF_DATABASE"
-                warehouse: "$SF_WAREHOUSE"
-                schema: SILVER
-                threads: 6
-          EOF
+default:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "$SF_ACCOUNT"
+      user: "$SF_USER"
+      password: "$SF_PASSWORD"
+      role: ACCOUNTADMIN
+      database: "$SF_DATABASE"
+      warehouse: "$SF_WAREHOUSE"
+      schema: RAW
+      threads: 6
 
-      - name: Deploy DBT project
-        run: dbt build
+      - name: Deploy dbt project
+        run: dbt build --profiles-dir ~/.dbt

@@ -19,3 +19,10 @@ models:
             tests:
                 - unique
                 - not_null
+  sources:
+    - name: raw
+      database : EMP_T    
+      schema: emp_t2
+      tables:
+    - name: orders
+          description: these is the system of these i am  correcet

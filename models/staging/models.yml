@@ -5,10 +5,14 @@ models:
         tests:
           - not_null
           - unique
+
       - name: customer_name
-            - unique
+        tests:
+          - unique
+
   - name: stag_orders
-     columns:
+    columns:
       - name: order_id
-            - not null 
+        tests:
+          - not_null
         # You can add more tests or descriptions here

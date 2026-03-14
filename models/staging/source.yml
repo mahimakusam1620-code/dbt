@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    database: emp_t
+    schema: EMP_t2
+    tables:
+      - name: customers
+      - name: orders

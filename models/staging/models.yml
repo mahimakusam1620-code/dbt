@@ -1,0 +1,14 @@
+models:
+  - name: customer_staging
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_name
+            - unique
+  - name: stag_orders
+     columns:
+      - name: order_id
+            - not null 
+        # You can add more tests or descriptions here

@@ -5,6 +5,6 @@ sources:
     database: emp_t
     schema: EMP_t2
     tables:
-      - name: customers
+      - name: CUSTOMERS
       - name: orders
       - name: tbalespace
